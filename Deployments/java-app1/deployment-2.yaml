@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-java-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-java-app
+  template:
+    metadata:
+      labels:
+        app: my-java-app
+    spec:
+      containers:
+        - name: my-java-app
+          image: my-java-app:latest   # Local image name
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080     # Change if your app uses a different port
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-java-app-service
+spec:
+  type: NodePort
+  selector:
+    app: my-java-app
+  ports:
+    - port: 80            # Service port (what clients use)
+      targetPort: 8080    # Container port
+      nodePort: 30080     # Port exposed on the node (custom NodePort: range 30000–32767)
